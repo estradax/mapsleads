@@ -7,3 +7,4 @@ out
 local.db
 sqlite.db
 *.db
+.env

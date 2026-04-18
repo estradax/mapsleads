@@ -9,6 +9,7 @@ import {
   registerExportHandler
 } from './controller'
 import { runMigrations } from './database/database'
+import { registerAutoUpdater } from './updater'
 
 function createWindow(): void {
   // Create the browser window.
@@ -64,6 +65,7 @@ app.whenReady().then(() => {
 
   runMigrations().then(() => {
     createWindow()
+    registerAutoUpdater()
   })
 
   app.on('activate', function () {
