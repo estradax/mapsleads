@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, MapPin, Star, Phone, Globe, Calendar, Briefcase } from 'lucide-react'
+import { ArrowLeft, Star, Phone, Globe, Calendar, Search } from 'lucide-react'
 
 export function SearchDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>()
@@ -53,7 +53,7 @@ export function SearchDetail(): React.JSX.Element {
             <h1 className="text-4xl font-extrabold text-primary tracking-tight">{search.title}</h1>
             <div className="flex items-center gap-4 text-sm text-base-content/60">
               <span className="flex items-center gap-1.5">
-                <Briefcase size={14} /> {search.query}
+                <Search size={14} /> {search.query}
               </span>
               <span className="flex items-center gap-1.5">
                 <Calendar size={14} /> {new Date(search.createdAt).toLocaleDateString()}
@@ -79,8 +79,7 @@ export function SearchDetail(): React.JSX.Element {
               <thead className="bg-base-300/50">
                 <tr>
                   <th className="font-bold">Business Name</th>
-                  <th className="font-bold">Rating</th>
-                  <th className="font-bold">Contact</th>
+                  <th className="font-bold min-w-[200px]">Contact</th>
                   <th className="font-bold">Address</th>
                   <th className="font-bold">Actions</th>
                 </tr>
@@ -89,22 +88,20 @@ export function SearchDetail(): React.JSX.Element {
                 {results.map((result) => (
                   <tr key={result.id} className="hover:bg-primary/5 transition-colors group">
                     <td>
-                      <div className="font-bold text-base group-hover:text-primary transition-colors">
+                      <div className="font-bold text-sm group-hover:text-primary transition-colors">
                         {result.title}
                       </div>
-                      <div className="text-xs opacity-50 flex items-center gap-1 mt-0.5">
-                        <MapPin size={10} /> {result.type || 'Business'}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="flex items-center gap-1.5">
-                        <div className="flex items-center text-warning font-bold">
-                          <Star size={14} fill="currentColor" />
-                          <span className="ml-1">{result.rating || 'N/A'}</span>
+                      <div className="text-xs opacity-50 flex items-center gap-3 mt-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <div className="flex items-center text-warning font-bold">
+                            <Star size={12} fill="currentColor" />
+                            <span className="ml-1">{result.rating || 'N/A'}</span>
+                          </div>
+                          <span className="opacity-70">({result.reviews || 0})</span>
                         </div>
-                        <span className="text-xs opacity-50">({result.reviews || 0})</span>
                       </div>
                     </td>
+
                     <td>
                       <div className="flex flex-col gap-1">
                         {result.phone && (
@@ -121,7 +118,7 @@ export function SearchDetail(): React.JSX.Element {
                             className="flex items-center gap-1.5 text-xs text-info hover:underline"
                           >
                             <Globe size={12} />
-                            Website
+                            {result.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
                           </a>
                         )}
                         {!result.phone && !result.website && (
@@ -129,8 +126,11 @@ export function SearchDetail(): React.JSX.Element {
                         )}
                       </div>
                     </td>
-                    <td className="max-w-xs truncate">
-                      <div className="text-xs opacity-70 truncate" title={result.address}>
+                    <td className="max-w-48">
+                      <div
+                        className="text-xs opacity-70 truncate group-hover:whitespace-normal group-hover:break-words transition-all"
+                        title={result.address}
+                      >
                         {result.address}
                       </div>
                     </td>
@@ -140,9 +140,9 @@ export function SearchDetail(): React.JSX.Element {
                           href={result.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="btn btn-ghost btn-xs btn-square"
+                          className="btn btn-ghost btn-xs whitespace-nowrap"
                         >
-                          <MapPin size={14} />
+                          Go to GMaps
                         </a>
                       )}
                     </td>
@@ -150,7 +150,7 @@ export function SearchDetail(): React.JSX.Element {
                 ))}
                 {results.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="text-center py-20 opacity-30 italic font-medium">
+                    <td colSpan={4} className="text-center py-20 opacity-30 italic font-medium">
                       No results found for this search.
                     </td>
                   </tr>
