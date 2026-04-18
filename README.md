@@ -1,6 +1,6 @@
 # mapsleads
 
-An Electron application with React and TypeScript
+Get leads data from a maps information
 
 ## Recommended IDE Setup
 
