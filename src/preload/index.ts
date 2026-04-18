@@ -7,6 +7,9 @@ const api = {
     init: () => ipcRenderer.invoke('maps-engine:init'),
     close: () => ipcRenderer.invoke('maps-engine:close'),
     search: (query: string) => ipcRenderer.invoke('maps-engine:search', query)
+  },
+  search: {
+    getAll: () => ipcRenderer.invoke('search:get-all')
   }
 }
 

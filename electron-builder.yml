@@ -41,5 +41,10 @@ npmRebuild: false
 publish:
   provider: generic
   url: https://example.com/auto-updates
+extraResources:
+  - from: drizzle
+    to: drizzle
+    filter:
+      - '**/*'
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

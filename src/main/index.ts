@@ -3,6 +3,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerMapsEngineHandler } from './maps-engine'
+import { registerSearchHandler } from './controller'
+import { runMigrations } from './database/database'
 
 function createWindow(): void {
   // Create the browser window.
@@ -51,8 +53,11 @@ app.whenReady().then(() => {
   })
 
   registerMapsEngineHandler()
+  registerSearchHandler()
 
-  createWindow()
+  runMigrations().then(() => {
+    createWindow()
+  })
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
