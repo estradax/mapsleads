@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { SearchInput } from '@renderer/components/search-input'
+import { SearchOverlay } from '@renderer/components/search-overlay'
 
 export function App(): React.JSX.Element {
   const [inputValue, setInputValue] = useState('')
+  const [isSearching, setIsSearching] = useState(false)
 
   const handleSearch = async (): Promise<void> => {
+    setIsSearching(true)
     try {
       await window.api.mapsEngine.init()
       const results = await window.api.mapsEngine.search(inputValue)
@@ -13,6 +16,7 @@ export function App(): React.JSX.Element {
       console.error('Search failed:', error)
     } finally {
       await window.api.mapsEngine.close()
+      setIsSearching(false)
     }
   }
 
@@ -24,6 +28,7 @@ export function App(): React.JSX.Element {
           <SearchInput value={inputValue} onChange={setInputValue} onSearch={handleSearch} />
         </div>
       </div>
+      <SearchOverlay isVisible={isSearching} />
     </div>
   )
 }
