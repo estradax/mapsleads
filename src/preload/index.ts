@@ -1,8 +1,14 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  mapsEngine: {
+    init: () => ipcRenderer.invoke('maps-engine:init'),
+    close: () => ipcRenderer.invoke('maps-engine:close'),
+    search: (query: string) => ipcRenderer.invoke('maps-engine:search', query)
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

@@ -4,8 +4,16 @@ import { SearchInput } from '@renderer/components/search-input'
 export function App(): React.JSX.Element {
   const [inputValue, setInputValue] = useState('')
 
-  const handleSearch = (): void => {
-    console.log('Searching for:', inputValue)
+  const handleSearch = async (): Promise<void> => {
+    try {
+      await window.api.mapsEngine.init()
+      const results = await window.api.mapsEngine.search(inputValue)
+      console.log('Search results:', results)
+    } catch (error) {
+      console.error('Search failed:', error)
+    } finally {
+      await window.api.mapsEngine.close()
+    }
   }
 
   return (
