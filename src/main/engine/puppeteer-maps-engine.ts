@@ -13,15 +13,15 @@ export class PuppeteerMapsEngine implements MapsEngine {
     puppeteer.use(StealthPlugin())
   }
 
-  async init() {
+  async init(): Promise<void> {
     this.browser = await puppeteer.launch({
       headless: false,
       args: ['--start-maximized', '--lang=en-US']
     })
     this.page = await this.browser.newPage()
     await this.page.evaluateOnNewDocument(() => {
-      // @ts-ignore
-      window.__name = (fn, name) => fn
+      // @ts-ignore: Custom property for internal tracking
+      window.__name = (fn: (...args: unknown[]) => unknown) => fn
     })
     await this.page.setExtraHTTPHeaders({
       'Accept-Language': 'en-US,en;q=0.9'
@@ -164,10 +164,12 @@ export class PuppeteerMapsEngine implements MapsEngine {
 
           try {
             await page.waitForSelector('h1.DUwDvf, .Io6YTe', { timeout: 5000 })
-          } catch (e) {}
+          } catch {
+            // Ignore timeout if selector is not found
+          }
 
           const detailedData = await page.evaluate(() => {
-            const getField = (itemId: string, ariaPrefix: string) => {
+            const getField = (itemId: string, ariaPrefix: string): string | undefined => {
               const el = document.querySelector(
                 `[data-item-id^="${itemId}"], [aria-label^="${ariaPrefix}"]`
               )
@@ -197,7 +199,7 @@ export class PuppeteerMapsEngine implements MapsEngine {
             let price: string | undefined = undefined
             if (priceEl) {
               const priceText = priceEl.textContent?.trim() || ''
-              const priceMatch = priceText.match(/((?:Rp|[\$£€])[\s\u00A0]*[\d. \-–—,]+)/)
+              const priceMatch = priceText.match(/((?:Rp|[$£€])[\s\u00A0]*[\d. \-–—,]+)/)
               price = priceMatch && priceMatch[1] ? priceMatch[1].trim() : undefined
             }
 
@@ -238,7 +240,7 @@ export class PuppeteerMapsEngine implements MapsEngine {
     return finalResults
   }
 
-  private async wait(start: number, end: number) {
+  private async wait(start: number, end: number): Promise<void> {
     const page = this.getPage()
     const viewport = await page.evaluate(() => ({
       width: window.innerWidth,
@@ -260,7 +262,7 @@ export class PuppeteerMapsEngine implements MapsEngine {
     }
   }
 
-  private async bezierMove(fromX: number, fromY: number, toX: number, toY: number) {
+  private async bezierMove(fromX: number, fromY: number, toX: number, toY: number): Promise<void> {
     const page = this.getPage()
     const cp1x = fromX + (Math.random() - 0.5) * 200
     const cp1y = fromY + (Math.random() - 0.5) * 200

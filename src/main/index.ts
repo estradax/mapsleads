@@ -1,8 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { PuppeteerMapsEngine } from './engine/puppeteer-maps-engine'
+import { registerMapsEngineHandler } from './maps-engine'
 
 function createWindow(): void {
   // Create the browser window.
@@ -50,19 +50,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  const mapsEngine = new PuppeteerMapsEngine()
-
-  ipcMain.handle('maps-engine:init', async () => {
-    return await mapsEngine.init()
-  })
-
-  ipcMain.handle('maps-engine:close', async () => {
-    return await mapsEngine.close()
-  })
-
-  ipcMain.handle('maps-engine:search', async (_, query: string) => {
-    return await mapsEngine.search(query)
-  })
+  registerMapsEngineHandler()
 
   createWindow()
 
