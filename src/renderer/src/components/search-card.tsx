@@ -8,7 +8,7 @@ type SearchCardProps = {
   search: Search
 }
 
-export function SearchCard({ search }: SearchCardProps): JSX.Element {
+export function SearchCard({ search }: SearchCardProps): React.JSX.Element {
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState(search.title)
   const inputRef = useRef<HTMLInputElement>(null)

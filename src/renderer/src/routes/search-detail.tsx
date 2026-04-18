@@ -163,7 +163,8 @@ export function SearchDetail(): React.JSX.Element {
                 <Search size={14} /> {search.query}
               </span>
               <span className="flex items-center gap-1.5">
-                <Calendar size={14} /> {new Date(search.createdAt).toLocaleDateString()}
+                <Calendar size={14} />{' '}
+                {search.createdAt ? new Date(search.createdAt).toLocaleDateString() : 'N/A'}
               </span>
             </div>
           </div>

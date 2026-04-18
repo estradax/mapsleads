@@ -2,8 +2,8 @@ export type Search = {
   id: number
   title: string
   query: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CreateSearchInput = Pick<Search, 'title' | 'query'>
@@ -26,7 +26,7 @@ export type SearchResult = {
   plusCode: string | null
   type: string | null
   url: string | null
-  createdAt: Date
+  createdAt: Date | null
 }
 
 export type CreateSearchResultInput = Omit<SearchResult, 'id' | 'createdAt'>

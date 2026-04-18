@@ -1,7 +1,8 @@
 import { Browser, Page } from 'puppeteer'
 import puppeteer from 'puppeteer-extra'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-import type { MapSearchResult, MapsEngine, SearchOptions } from './maps-engine.js'
+import type { MapSearchResult, SearchOptions } from '@shared/types'
+import type { MapsEngine } from './maps-engine.js'
 
 export class PuppeteerMapsEngine implements MapsEngine {
   private browser?: Browser
