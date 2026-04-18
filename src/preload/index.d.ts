@@ -11,10 +11,12 @@ type MapsEngineAPI = {
 type SearchAPI = {
   getAll: () => Promise<Search[]>
   create: (data: CreateSearchInput) => Promise<Search[]>
+  get: (id: number) => Promise<Search | undefined>
 }
 
 type SearchResultAPI = {
   createBulk: (results: CreateSearchResultInput[]) => Promise<SearchResult[]>
+  getAll: (params?: { search_id?: number }) => Promise<SearchResult[]>
 }
 
 declare global {

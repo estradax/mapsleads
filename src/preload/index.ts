@@ -11,11 +11,13 @@ const api = {
   },
   search: {
     getAll: () => ipcRenderer.invoke('search:get-all'),
-    create: (data: CreateSearchInput) => ipcRenderer.invoke('search:create', data)
+    create: (data: CreateSearchInput) => ipcRenderer.invoke('search:create', data),
+    get: (id: number) => ipcRenderer.invoke('search:get', id)
   },
   searchResult: {
     createBulk: (results: CreateSearchResultInput[]) =>
-      ipcRenderer.invoke('search-result:create-bulk', results)
+      ipcRenderer.invoke('search-result:create-bulk', results),
+    getAll: (params?: { search_id?: number }) => ipcRenderer.invoke('search-result:get-all', params)
   }
 }
 

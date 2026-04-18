@@ -1,5 +1,6 @@
-import { Calendar, Search as SearchIcon } from 'lucide-react'
+import { Calendar, Search as SearchIcon, ExternalLink } from 'lucide-react'
 import { Search } from '@shared/types'
+import { Link } from 'react-router'
 
 type SearchCardProps = {
   search: Search
@@ -17,7 +18,10 @@ export function SearchCard({ search }: SearchCardProps) {
   })
 
   return (
-    <div className="card bg-base-100 shadow-sm border border-base-300 hover:shadow-md hover:border-primary/30 transition-all cursor-pointer group">
+    <Link
+      to={`/search/${search.id}`}
+      className="card bg-base-100 shadow-sm border border-base-300 hover:shadow-md hover:border-primary/30 transition-all cursor-pointer group"
+    >
       <div className="card-body p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1 overflow-hidden">
@@ -32,6 +36,9 @@ export function SearchCard({ search }: SearchCardProps) {
               <span className="truncate">{search.query}</span>
             </div>
           </div>
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+            <ExternalLink size={14} className="text-primary" />
+          </div>
         </div>
 
         <div className="flex items-center gap-1.5 mt-4 text-[10px] font-medium uppercase tracking-wider text-base-content/40">
@@ -39,6 +46,6 @@ export function SearchCard({ search }: SearchCardProps) {
           {formattedDate}
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

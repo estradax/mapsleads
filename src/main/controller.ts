@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
-import { getSearches, createSearch } from './controller/search'
-import { createSearchResultBulk } from './controller/search-result'
+import { getSearches, createSearch, getSearchById } from './controller/search'
+import { createSearchResultBulk, getSearchResults } from './controller/search-result'
 import { CreateSearchInput, CreateSearchResultInput } from '@shared/types'
 
 export function registerSearchHandler() {
@@ -11,10 +11,18 @@ export function registerSearchHandler() {
   ipcMain.handle('search:create', async (_, data: CreateSearchInput) => {
     return await createSearch(data)
   })
+
+  ipcMain.handle('search:get', async (_, id: number) => {
+    return await getSearchById(id)
+  })
 }
 
 export function registerSearchResultHandler() {
   ipcMain.handle('search-result:create-bulk', async (_, results: CreateSearchResultInput[]) => {
     return await createSearchResultBulk(results)
+  })
+
+  ipcMain.handle('search-result:get-all', async (_, params?: { search_id?: number }) => {
+    return await getSearchResults(params)
   })
 }
