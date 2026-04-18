@@ -3,7 +3,6 @@ import puppeteer from 'puppeteer-extra'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import type { MapSearchResult, MapsEngine, SearchOptions } from './maps-engine.js'
 
-
 export class PuppeteerMapsEngine implements MapsEngine {
   private browser?: Browser
   private page?: Page

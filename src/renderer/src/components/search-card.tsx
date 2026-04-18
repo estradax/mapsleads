@@ -8,7 +8,7 @@ type SearchCardProps = {
   search: Search
 }
 
-export function SearchCard({ search }: SearchCardProps) {
+export function SearchCard({ search }: SearchCardProps): JSX.Element {
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState(search.title)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -50,7 +50,7 @@ export function SearchCard({ search }: SearchCardProps) {
     }
   }, [isEditing])
 
-  const handleSave = () => {
+  const handleSave = (): void => {
     if (updateMutation.isPending) return
 
     const trimmedValue = editValue.trim()
@@ -62,7 +62,7 @@ export function SearchCard({ search }: SearchCardProps) {
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (e.key === 'Enter') {
       e.preventDefault()
       e.stopPropagation()

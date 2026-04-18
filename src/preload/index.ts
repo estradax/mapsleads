@@ -3,31 +3,38 @@ import { electronAPI } from '@electron-toolkit/preload'
 import {
   CreateSearchInput,
   CreateSearchResultInput,
+  MapSearchResult,
   Search,
+  SearchOptions,
+  SearchResult,
   UpdateSearchInput
 } from '@shared/types'
 
 // Custom APIs for renderer
 const api = {
   mapsEngine: {
-    init: () => ipcRenderer.invoke('maps-engine:init'),
-    close: () => ipcRenderer.invoke('maps-engine:close'),
-    search: (query: string, options?: any) => ipcRenderer.invoke('maps-engine:search', query, options)
+    init: (): Promise<void> => ipcRenderer.invoke('maps-engine:init'),
+    close: (): Promise<void> => ipcRenderer.invoke('maps-engine:close'),
+    search: (query: string, options?: SearchOptions): Promise<MapSearchResult[]> =>
+      ipcRenderer.invoke('maps-engine:search', query, options)
   },
   search: {
-    getAll: () => ipcRenderer.invoke('search:get-all'),
-    create: (data: CreateSearchInput) => ipcRenderer.invoke('search:create', data),
-    get: (id: number) => ipcRenderer.invoke('search:get', id),
-    update: (id: number, data: UpdateSearchInput) => ipcRenderer.invoke('search:update', id, data),
-    delete: (id: number) => ipcRenderer.invoke('search:delete', id)
+    getAll: (): Promise<Search[]> => ipcRenderer.invoke('search:get-all'),
+    create: (data: CreateSearchInput): Promise<Search[]> =>
+      ipcRenderer.invoke('search:create', data),
+    get: (id: number): Promise<Search | undefined> => ipcRenderer.invoke('search:get', id),
+    update: (id: number, data: UpdateSearchInput): Promise<Search[]> =>
+      ipcRenderer.invoke('search:update', id, data),
+    delete: (id: number): Promise<Search[]> => ipcRenderer.invoke('search:delete', id)
   },
   searchResult: {
-    createBulk: (results: CreateSearchResultInput[]) =>
+    createBulk: (results: CreateSearchResultInput[]): Promise<SearchResult[]> =>
       ipcRenderer.invoke('search-result:create-bulk', results),
-    getAll: (params?: { search_id?: number }) => ipcRenderer.invoke('search-result:get-all', params)
+    getAll: (params?: { search_id?: number }): Promise<SearchResult[]> =>
+      ipcRenderer.invoke('search-result:get-all', params)
   },
   export: {
-    excel: (search: Search) => ipcRenderer.invoke('export:excel', search)
+    excel: (search: Search): Promise<void> => ipcRenderer.invoke('export:excel', search)
   }
 }
 

@@ -29,17 +29,18 @@ export function SearchDetail(): React.JSX.Element {
     enabled: !!searchId
   })
 
-  useEffect(() => {
-    if (searchQuery.data && !isEditing) {
-      setEditValue(searchQuery.data.title)
-    }
-  }, [searchQuery.data, isEditing])
-
   const resultsQuery = useQuery({
     queryKey: ['searchResults', searchId],
     queryFn: () => window.api.searchResult.getAll({ search_id: searchId }),
     enabled: !!searchId
   })
+
+  const handleEditStart = (): void => {
+    if (searchQuery.data) {
+      setEditValue(searchQuery.data.title)
+      setIsEditing(true)
+    }
+  }
 
   const updateMutation = useMutation({
     mutationFn: (newTitle: string) => window.api.search.update(searchId, { title: newTitle }),
@@ -69,7 +70,7 @@ export function SearchDetail(): React.JSX.Element {
     }
   }, [isEditing])
 
-  const handleSave = () => {
+  const handleSave = (): void => {
     if (updateMutation.isPending) return
 
     const trimmedValue = editValue.trim()
@@ -81,7 +82,7 @@ export function SearchDetail(): React.JSX.Element {
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (e.key === 'Enter') {
       handleSave()
     } else if (e.key === 'Escape') {
@@ -143,17 +144,14 @@ export function SearchDetail(): React.JSX.Element {
                 <div className="flex items-center gap-3">
                   <h1
                     className="text-4xl font-extrabold text-primary tracking-tight cursor-text hover:bg-base-300/50 px-2 -ml-2 rounded-lg transition-colors"
-                    onClick={() => {
-                      setEditValue(search.title)
-                      setIsEditing(true)
-                    }}
+                    onClick={handleEditStart}
                     title="Click to rename"
                   >
                     {search.title}
                   </h1>
                   <button
                     className="btn btn-ghost btn-circle btn-sm opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => setIsEditing(true)}
+                    onClick={handleEditStart}
                   >
                     <Edit3 size={18} className="text-base-content/40" />
                   </button>
