@@ -1,8 +1,13 @@
 import { ipcMain } from 'electron'
-import { getSearches, createSearch, getSearchById } from './controller/search'
+import { getSearches, createSearch, getSearchById, updateSearch, deleteSearch } from './controller/search'
 import { createSearchResultBulk, getSearchResults } from './controller/search-result'
 import { ExcelExporter } from './controller/export'
-import { CreateSearchInput, CreateSearchResultInput, Search } from '@shared/types'
+import {
+  CreateSearchInput,
+  CreateSearchResultInput,
+  Search,
+  UpdateSearchInput
+} from '@shared/types'
 
 export function registerSearchHandler() {
   ipcMain.handle('search:get-all', async () => {
@@ -15,6 +20,14 @@ export function registerSearchHandler() {
 
   ipcMain.handle('search:get', async (_, id: number) => {
     return await getSearchById(id)
+  })
+
+  ipcMain.handle('search:update', async (_, id: number, data: UpdateSearchInput) => {
+    return await updateSearch(id, data)
+  })
+
+  ipcMain.handle('search:delete', async (_, id: number) => {
+    return await deleteSearch(id)
   })
 }
 

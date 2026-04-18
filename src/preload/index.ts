@@ -1,6 +1,11 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { CreateSearchInput, CreateSearchResultInput, Search } from '@shared/types'
+import {
+  CreateSearchInput,
+  CreateSearchResultInput,
+  Search,
+  UpdateSearchInput
+} from '@shared/types'
 
 // Custom APIs for renderer
 const api = {
@@ -12,7 +17,9 @@ const api = {
   search: {
     getAll: () => ipcRenderer.invoke('search:get-all'),
     create: (data: CreateSearchInput) => ipcRenderer.invoke('search:create', data),
-    get: (id: number) => ipcRenderer.invoke('search:get', id)
+    get: (id: number) => ipcRenderer.invoke('search:get', id),
+    update: (id: number, data: UpdateSearchInput) => ipcRenderer.invoke('search:update', id, data),
+    delete: (id: number) => ipcRenderer.invoke('search:delete', id)
   },
   searchResult: {
     createBulk: (results: CreateSearchResultInput[]) =>

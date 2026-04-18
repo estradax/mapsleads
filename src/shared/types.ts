@@ -7,6 +7,7 @@ export type Search = {
 }
 
 export type CreateSearchInput = Pick<Search, 'title' | 'query'>
+export type UpdateSearchInput = Partial<CreateSearchInput>
 
 export type SearchResult = {
   id: number
