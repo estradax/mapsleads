@@ -12,7 +12,9 @@ export function registerAutoUpdater(): void {
 
   // Check for updates every hour (optional, but good for long-running apps)
   // For now, we'll just check on startup as requested
-  autoUpdater.checkForUpdatesAndNotify()
+  autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+    console.error('Failed to check for updates:', err.message)
+  })
 
   // Event listeners
   autoUpdater.on('update-available', () => {
