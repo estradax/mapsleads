@@ -1,4 +1,4 @@
-# mapsleads
+# MapsLeads
 
 Get leads data from a maps information
 

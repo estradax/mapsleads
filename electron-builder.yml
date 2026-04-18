@@ -1,5 +1,5 @@
 appId: com.azharwebdev.mapsleads
-productName: mapsleads
+productName: MapsLeads
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: mapsleads
+  executableName: MapsLeads
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
