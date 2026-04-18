@@ -6,6 +6,7 @@ import { SearchCard } from '@renderer/components/search-card'
 
 export function Search(): React.JSX.Element {
   const [inputValue, setInputValue] = useState('')
+  const [maxScroll, setMaxScroll] = useState(5)
   const searchesQuery = useQuery({
     queryKey: ['searches'],
     queryFn: () => window.api.search.getAll()
@@ -15,7 +16,7 @@ export function Search(): React.JSX.Element {
     mutationFn: async (query: string) => {
       await window.api.mapsEngine.init()
       try {
-        const results = await window.api.mapsEngine.search(query)
+        const results = await window.api.mapsEngine.search(query, { maxScroll })
         const search = await window.api.search.create({ title: query, query })
         await window.api.searchResult.createBulk(
           results.map((result) => ({
@@ -58,6 +59,26 @@ export function Search(): React.JSX.Element {
           onChange={setInputValue}
           onSearch={() => searchMutation.mutate(inputValue)}
         />
+        <div className="flex items-center gap-3 mt-4">
+          <div className="form-control w-fit">
+            <select
+              className="select select-sm select-bordered focus:outline-none"
+              value={maxScroll}
+              onChange={(e) => setMaxScroll(Number(e.target.value))}
+            >
+              <option value={5}>Small</option>
+              <option value={10}>Medium</option>
+              <option value={15}>Deep</option>
+            </select>
+          </div>
+          {maxScroll > 5 && (
+            <span className="text-xs text-base-content/60 italic animate-pulse">
+              {maxScroll === 10
+                ? 'Searching deeper takes a bit more time...'
+                : 'A thorough search will take some extra time to find more leads.'}
+            </span>
+          )}
+        </div>
       </div>
 
       {searchesQuery.data && searchesQuery.data.length > 0 && (

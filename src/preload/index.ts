@@ -12,7 +12,7 @@ const api = {
   mapsEngine: {
     init: () => ipcRenderer.invoke('maps-engine:init'),
     close: () => ipcRenderer.invoke('maps-engine:close'),
-    search: (query: string) => ipcRenderer.invoke('maps-engine:search', query)
+    search: (query: string, options?: any) => ipcRenderer.invoke('maps-engine:search', query, options)
   },
   search: {
     getAll: () => ipcRenderer.invoke('search:get-all'),

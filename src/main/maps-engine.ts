@@ -12,7 +12,7 @@ export function registerMapsEngineHandler(): void {
     return await mapsEngine.close()
   })
 
-  ipcMain.handle('maps-engine:search', async (_, query: string) => {
-    return await mapsEngine.search(query)
+  ipcMain.handle('maps-engine:search', async (_, query: string, options?: any) => {
+    return await mapsEngine.search(query, options)
   })
 }

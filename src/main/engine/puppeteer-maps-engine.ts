@@ -1,7 +1,8 @@
 import { Browser, Page } from 'puppeteer'
 import puppeteer from 'puppeteer-extra'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-import type { MapSearchResult, MapsEngine } from './maps-engine.js'
+import type { MapSearchResult, MapsEngine, SearchOptions } from './maps-engine.js'
+
 
 export class PuppeteerMapsEngine implements MapsEngine {
   private browser?: Browser
@@ -47,7 +48,7 @@ export class PuppeteerMapsEngine implements MapsEngine {
     }
   }
 
-  async search(query: string): Promise<MapSearchResult[]> {
+  async search(query: string, options?: SearchOptions): Promise<MapSearchResult[]> {
     const page = this.getPage()
     const encodedQuery = encodeURIComponent(query).replace(/%20/g, '+')
     const url = `https://www.google.com/maps/search/${encodedQuery}?hl=en`
@@ -56,7 +57,7 @@ export class PuppeteerMapsEngine implements MapsEngine {
     await this.wait(2000, 3000)
 
     let scrollCount = 0
-    const maxScrolls = 5
+    const maxScrolls = options?.maxScrolls ?? 5
     let lastHeight = await page.evaluate(() => {
       const feed = document.querySelector('div[role="feed"]')
       return feed ? feed.scrollHeight : 0

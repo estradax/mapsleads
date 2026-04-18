@@ -19,8 +19,12 @@ export type MapSearchResult = {
   url?: string | undefined
 }
 
+export type SearchOptions = {
+  maxScrolls?: number
+}
+
 export type MapsEngine = {
   init(): Promise<void>
   close(): Promise<void>
-  search(query: string): Promise<MapSearchResult[]>
+  search(query: string, options?: SearchOptions): Promise<MapSearchResult[]>
 }

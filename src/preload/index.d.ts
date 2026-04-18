@@ -1,5 +1,5 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { MapSearchResult } from '@main/engine/maps-engine'
+import { MapSearchResult, SearchOptions } from '@main/engine/maps-engine'
 import {
   Search,
   CreateSearchInput,
@@ -11,7 +11,7 @@ import {
 type MapsEngineAPI = {
   init: () => Promise<void>
   close: () => Promise<void>
-  search: (query: string) => Promise<MapSearchResult[]>
+  search: (query: string, options?: SearchOptions) => Promise<MapSearchResult[]>
 }
 
 type SearchAPI = {
