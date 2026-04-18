@@ -19,6 +19,10 @@ type SearchResultAPI = {
   getAll: (params?: { search_id?: number }) => Promise<SearchResult[]>
 }
 
+type ExportAPI = {
+  excel: (search: Search) => Promise<void>
+}
+
 declare global {
   interface Window {
     electron: ElectronAPI
@@ -26,6 +30,7 @@ declare global {
       mapsEngine: MapsEngineAPI
       search: SearchAPI
       searchResult: SearchResultAPI
+      export: ExportAPI
     }
   }
 }

@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerMapsEngineHandler } from './maps-engine'
-import { registerSearchHandler, registerSearchResultHandler } from './controller'
+import { registerSearchHandler, registerSearchResultHandler, registerExportHandler } from './controller'
 import { runMigrations } from './database/database'
 
 function createWindow(): void {
@@ -55,6 +55,7 @@ app.whenReady().then(() => {
   registerMapsEngineHandler()
   registerSearchHandler()
   registerSearchResultHandler()
+  registerExportHandler()
 
   runMigrations().then(() => {
     createWindow()

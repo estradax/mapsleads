@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { CreateSearchInput, CreateSearchResultInput } from '@shared/types'
+import { CreateSearchInput, CreateSearchResultInput, Search } from '@shared/types'
 
 // Custom APIs for renderer
 const api = {
@@ -18,6 +18,9 @@ const api = {
     createBulk: (results: CreateSearchResultInput[]) =>
       ipcRenderer.invoke('search-result:create-bulk', results),
     getAll: (params?: { search_id?: number }) => ipcRenderer.invoke('search-result:get-all', params)
+  },
+  export: {
+    excel: (search: Search) => ipcRenderer.invoke('export:excel', search)
   }
 }
 

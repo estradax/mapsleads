@@ -1,4 +1,4 @@
-import { Calendar, Search as SearchIcon, ExternalLink } from 'lucide-react'
+import { Calendar, Search as SearchIcon, ExternalLink, Download } from 'lucide-react'
 import { Search } from '@shared/types'
 import { Link } from 'react-router'
 
@@ -36,8 +36,19 @@ export function SearchCard({ search }: SearchCardProps) {
               <span className="truncate">{search.query}</span>
             </div>
           </div>
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-            <ExternalLink size={14} className="text-primary" />
+          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              className="btn btn-ghost btn-xs btn-square text-primary hover:bg-primary/20"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                window.api.export.excel(search)
+              }}
+              title="Export to Excel"
+            >
+              <Download size={14} />
+            </button>
+            <ExternalLink size={14} className="text-base-content/30" />
           </div>
         </div>
 

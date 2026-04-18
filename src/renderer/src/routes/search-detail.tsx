@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, Star, Phone, Globe, Calendar, Search } from 'lucide-react'
+import { ArrowLeft, Star, Phone, Globe, Calendar, Search, Download } from 'lucide-react'
 
 export function SearchDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>()
@@ -61,15 +61,14 @@ export function SearchDetail(): React.JSX.Element {
             </div>
           </div>
 
-          <div className="stats shadow bg-base-100">
-            <div className="stat">
-              <div className="stat-title text-xs uppercase tracking-wider font-bold opacity-50">
-                Total Leads
-              </div>
-              <div className="stat-value text-primary text-3xl">{results.length}</div>
-              <div className="stat-desc">collected from maps</div>
-            </div>
-          </div>
+          <button
+            className="btn btn-primary gap-2 shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
+            onClick={() => window.api.export.excel(search)}
+            disabled={results.length === 0}
+          >
+            <Download size={20} />
+            Export to Excel
+          </button>
         </div>
 
         {/* Results Table */}
