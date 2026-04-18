@@ -11,7 +11,7 @@ const PLACEHOLDER_QUERIES = [
   'cafe di bandung'
 ]
 
-interface SearchInputProps {
+type SearchInputProps = {
   value: string
   onChange: (value: string) => void
   onSearch?: () => void

@@ -11,28 +11,28 @@ const LOADING_MESSAGES = [
 ]
 
 type SearchOverlayProps = {
-  isVisible: boolean
+  visible: boolean
 }
 
-export function SearchOverlay({ isVisible }: SearchOverlayProps): React.JSX.Element | null {
+export function SearchOverlay({ visible }: SearchOverlayProps): React.JSX.Element | null {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
 
   useEffect(() => {
-    if (!isVisible) return
+    if (!visible) return
 
     const interval = setInterval(() => {
       setIsTransitioning(true)
       setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % LOADING_MESSAGES.length)
         setIsTransitioning(false)
-      }, 500) // Match fade-out-up duration
+      }, 500)
     }, 4000)
 
     return () => clearInterval(interval)
-  }, [isVisible])
+  }, [visible])
 
-  if (!isVisible) return null
+  if (!visible) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-base-200/80 backdrop-blur-md transition-opacity duration-300">

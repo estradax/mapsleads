@@ -28,7 +28,7 @@ export function App(): React.JSX.Element {
           <SearchInput value={inputValue} onChange={setInputValue} onSearch={handleSearch} />
         </div>
       </div>
-      <SearchOverlay isVisible={isSearching} />
+      <SearchOverlay visible={isSearching} />
     </div>
   )
 }
