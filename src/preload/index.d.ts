@@ -1,13 +1,6 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { MapSearchResult } from '../main/engine/maps-engine'
-
-type Search = {
-  id: number
-  title: string
-  query: string
-  createdAt: Date
-  updatedAt: Date
-}
+import { MapSearchResult } from '@main/engine/maps-engine'
+import { Search, CreateSearchInput, CreateSearchResultInput, SearchResult } from '@shared/types'
 
 type MapsEngineAPI = {
   init: () => Promise<void>
@@ -17,6 +10,11 @@ type MapsEngineAPI = {
 
 type SearchAPI = {
   getAll: () => Promise<Search[]>
+  create: (data: CreateSearchInput) => Promise<Search[]>
+}
+
+type SearchResultAPI = {
+  createBulk: (results: CreateSearchResultInput[]) => Promise<SearchResult[]>
 }
 
 declare global {
@@ -25,6 +23,7 @@ declare global {
     api: {
       mapsEngine: MapsEngineAPI
       search: SearchAPI
+      searchResult: SearchResultAPI
     }
   }
 }

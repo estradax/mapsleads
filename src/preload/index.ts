@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { CreateSearchInput, CreateSearchResultInput } from '@shared/types'
 
 // Custom APIs for renderer
 const api = {
@@ -9,7 +10,12 @@ const api = {
     search: (query: string) => ipcRenderer.invoke('maps-engine:search', query)
   },
   search: {
-    getAll: () => ipcRenderer.invoke('search:get-all')
+    getAll: () => ipcRenderer.invoke('search:get-all'),
+    create: (data: CreateSearchInput) => ipcRenderer.invoke('search:create', data)
+  },
+  searchResult: {
+    createBulk: (results: CreateSearchResultInput[]) =>
+      ipcRenderer.invoke('search-result:create-bulk', results)
   }
 }
 
