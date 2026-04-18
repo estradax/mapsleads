@@ -1,10 +1,27 @@
-import { useParams, Link } from 'react-router'
-import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, Star, Phone, Globe, Calendar, Search, Download } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { useParams, Link, useNavigate } from 'react-router'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  ArrowLeft,
+  Star,
+  Phone,
+  Globe,
+  Calendar,
+  Search,
+  Download,
+  Trash2,
+  Edit3
+} from 'lucide-react'
 
 export function SearchDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>()
   const searchId = Number(id)
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+
+  const [isEditing, setIsEditing] = useState(false)
+  const [editValue, setEditValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const searchQuery = useQuery({
     queryKey: ['search', searchId],
@@ -12,11 +29,66 @@ export function SearchDetail(): React.JSX.Element {
     enabled: !!searchId
   })
 
+  useEffect(() => {
+    if (searchQuery.data && !isEditing) {
+      setEditValue(searchQuery.data.title)
+    }
+  }, [searchQuery.data, isEditing])
+
   const resultsQuery = useQuery({
     queryKey: ['searchResults', searchId],
     queryFn: () => window.api.searchResult.getAll({ search_id: searchId }),
     enabled: !!searchId
   })
+
+  const updateMutation = useMutation({
+    mutationFn: (newTitle: string) => window.api.search.update(searchId, { title: newTitle }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['search', searchId] })
+      queryClient.invalidateQueries({ queryKey: ['searches'] })
+      setIsEditing(false)
+    },
+    onError: () => {
+      if (searchQuery.data) setEditValue(searchQuery.data.title)
+      setIsEditing(false)
+    }
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: () => window.api.search.delete(searchId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['searches'] })
+      navigate('/')
+    }
+  })
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [isEditing])
+
+  const handleSave = () => {
+    if (updateMutation.isPending) return
+
+    const trimmedValue = editValue.trim()
+    if (searchQuery.data && trimmedValue && trimmedValue !== searchQuery.data.title) {
+      updateMutation.mutate(trimmedValue)
+    } else {
+      if (searchQuery.data) setEditValue(searchQuery.data.title)
+      setIsEditing(false)
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSave()
+    } else if (e.key === 'Escape') {
+      if (searchQuery.data) setEditValue(searchQuery.data.title)
+      setIsEditing(false)
+    }
+  }
 
   const isLoading = searchQuery.isLoading || resultsQuery.isLoading
   const search = searchQuery.data
@@ -46,12 +118,49 @@ export function SearchDetail(): React.JSX.Element {
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div className="space-y-2">
+          <div className="space-y-2 flex-1">
             <Link to="/" className="btn btn-ghost btn-sm gap-2 pl-0 hover:bg-transparent">
               <ArrowLeft size={16} /> Back to Search
             </Link>
-            <h1 className="text-4xl font-extrabold text-primary tracking-tight">{search.title}</h1>
-            <div className="flex items-center gap-4 text-sm text-base-content/60">
+            <div className="flex items-center gap-3 group">
+              {isEditing ? (
+                <div className="flex items-center gap-2 w-full max-w-2xl">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    className="input input-bordered input-lg text-4xl font-extrabold text-primary tracking-tight w-full bg-base-100 shadow-sm focus:outline-none h-auto py-2"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onBlur={handleSave}
+                    onKeyDown={handleKeyDown}
+                    disabled={updateMutation.isPending}
+                  />
+                  {updateMutation.isPending && (
+                    <span className="loading loading-spinner loading-md text-primary"></span>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <h1
+                    className="text-4xl font-extrabold text-primary tracking-tight cursor-text hover:bg-base-300/50 px-2 -ml-2 rounded-lg transition-colors"
+                    onClick={() => {
+                      setEditValue(search.title)
+                      setIsEditing(true)
+                    }}
+                    title="Click to rename"
+                  >
+                    {search.title}
+                  </h1>
+                  <button
+                    className="btn btn-ghost btn-circle btn-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    <Edit3 size={18} className="text-base-content/40" />
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-4 text-sm text-base-content/60 mt-1">
               <span className="flex items-center gap-1.5">
                 <Search size={14} /> {search.query}
               </span>
@@ -61,14 +170,32 @@ export function SearchDetail(): React.JSX.Element {
             </div>
           </div>
 
-          <button
-            className="btn btn-primary gap-2 shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
-            onClick={() => window.api.export.excel(search)}
-            disabled={results.length === 0}
-          >
-            <Download size={20} />
-            Export to Excel
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              className="btn btn-error btn-outline gap-2 shadow-sm hover:shadow-error/20 transition-all active:scale-95"
+              onClick={() => {
+                if (window.confirm('Are you sure you want to delete this search?')) {
+                  deleteMutation.mutate()
+                }
+              }}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? (
+                <span className="loading loading-spinner loading-xs"></span>
+              ) : (
+                <Trash2 size={18} />
+              )}
+              Delete
+            </button>
+            <button
+              className="btn btn-primary gap-2 shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
+              onClick={() => window.api.export.excel(search)}
+              disabled={results.length === 0}
+            >
+              <Download size={20} />
+              Export to Excel
+            </button>
+          </div>
         </div>
 
         {/* Results Table */}
