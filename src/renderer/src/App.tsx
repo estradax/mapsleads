@@ -1,35 +1,23 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
-
-function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-
+export function App(): React.JSX.Element {
   return (
-    <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
-      </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-base-100 text-base-content p-4">
+      <div className="max-w-md text-center space-y-6">
+        <h1 className="text-5xl font-bold text-primary">MapsLeads</h1>
+        <p className="text-lg">Get leads data from a maps information efficiently.</p>
+        <div className="card bg-base-200 shadow-xl p-8">
+          <div className="card-body items-center text-center">
+            <h2 className="card-title mb-4">Ready to start?</h2>
+            <div className="card-actions">
+              <button
+                className="btn btn-primary"
+                onClick={() => window.electron.ipcRenderer.send('ping')}
+              >
+                Ping Main Process
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-      <Versions></Versions>
-    </>
+    </div>
   )
 }
-
-export default App
