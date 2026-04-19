@@ -26,8 +26,8 @@ nsis:
   allowToChangeInstallationDirectory: false
   createDesktopShortcut: always
   createStartMenuShortcut: true
-  installerIcon: build/icon.ico
-  uninstallerIcon: build/icon.ico
+  installerIcon: build/icons/icon.ico
+  uninstallerIcon: build/icons/icon.ico
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
