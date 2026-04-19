@@ -31,6 +31,12 @@ type ExportAPI = {
   excel: (search: Search) => Promise<void>
 }
 
+type BrowserAPI = {
+  check: () => Promise<boolean>
+  download: () => Promise<string>
+  onDownloadProgress: (callback: (percent: number) => void) => void
+}
+
 declare global {
   interface Window {
     electron: ElectronAPI
@@ -39,6 +45,7 @@ declare global {
       search: SearchAPI
       searchResult: SearchResultAPI
       export: ExportAPI
+      browser: BrowserAPI
     }
   }
 }

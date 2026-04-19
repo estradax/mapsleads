@@ -35,6 +35,16 @@ const api = {
   },
   export: {
     excel: (search: Search): Promise<void> => ipcRenderer.invoke('export:excel', search)
+  },
+  browser: {
+    check: (): Promise<boolean> => ipcRenderer.invoke('browser:check'),
+    download: (): Promise<string> => ipcRenderer.invoke('browser:download'),
+    onDownloadProgress: (callback: (percent: number) => void): void => {
+      const listener = (_event: any, percent: number) => callback(percent)
+      ipcRenderer.on('browser:download-progress', listener)
+      // Cleanup might be needed if this is called multiple times, 
+      // but for app startup it's usually fine once.
+    }
   }
 }
 

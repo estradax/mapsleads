@@ -10,6 +10,7 @@ import {
 } from './controller'
 import { runMigrations } from './database/database'
 import { registerAutoUpdater } from './updater'
+import { BrowserManager } from './browser-manager'
 
 function createWindow(): void {
   // Create the browser window.
@@ -61,6 +62,7 @@ app.whenReady().then(() => {
   registerSearchHandler()
   registerSearchResultHandler()
   registerExportHandler()
+  BrowserManager.registerHandlers()
 
   runMigrations().then(() => {
     createWindow()

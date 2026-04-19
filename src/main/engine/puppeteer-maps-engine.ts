@@ -3,6 +3,7 @@ import puppeteer from 'puppeteer-extra'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import type { MapSearchResult, SearchOptions } from '@shared/types'
 import type { MapsEngine } from './maps-engine.js'
+import { BrowserManager } from '../browser-manager'
 
 export class PuppeteerMapsEngine implements MapsEngine {
   private browser?: Browser
@@ -15,9 +16,11 @@ export class PuppeteerMapsEngine implements MapsEngine {
   }
 
   async init(): Promise<void> {
+    const customExePath = await BrowserManager.getExecutablePath()
+
     this.browser = await puppeteer.launch({
       headless: false,
-      executablePath: executablePath(),
+      executablePath: customExePath || executablePath(),
       args: ['--start-maximized', '--lang=en-US']
     })
     this.page = await this.browser.newPage()
