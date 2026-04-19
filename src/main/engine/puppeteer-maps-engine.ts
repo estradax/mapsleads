@@ -1,4 +1,4 @@
-import { Browser, Page } from 'puppeteer'
+import { executablePath, Browser, Page } from 'puppeteer'
 import puppeteer from 'puppeteer-extra'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import type { MapSearchResult, SearchOptions } from '@shared/types'
@@ -17,6 +17,7 @@ export class PuppeteerMapsEngine implements MapsEngine {
   async init(): Promise<void> {
     this.browser = await puppeteer.launch({
       headless: false,
+      executablePath: executablePath(),
       args: ['--start-maximized', '--lang=en-US']
     })
     this.page = await this.browser.newPage()
